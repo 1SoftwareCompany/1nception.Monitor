@@ -1,27 +1,26 @@
-﻿using Elders.Cronus;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Cronus.Monitor.Api;
+namespace One.Inception.Monitor.Api;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> log;
-    private readonly ICronusHost cronusHost;
+    private readonly IInceptionHost inceptionHost;
 
-    public Worker(ILogger<Worker> log, ICronusHost cronusHost)
+    public Worker(ILogger<Worker> log, IInceptionHost inceptionHost)
     {
         this.log = log;
-        this.cronusHost = cronusHost;
+        this.inceptionHost = inceptionHost;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         log.LogInformation("Starting service...");
 
-        await cronusHost.StartAsync().ConfigureAwait(false);
+        await inceptionHost.StartAsync().ConfigureAwait(false);
 
         log.LogInformation("Service started!");
     }
@@ -30,7 +29,7 @@ public class Worker : BackgroundService
     {
         log.LogInformation("Stopping service...");
 
-        await cronusHost.StopAsync().ConfigureAwait(false); ;
+        await inceptionHost.StopAsync().ConfigureAwait(false); ;
 
         log.LogInformation("Service stopped");
     }

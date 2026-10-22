@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Cronus.Monitor.Models;
+using One.Inception.Monitor.Models;
 using System.Collections.Generic;
-using static Cronus.Monitor.CronusMonitoringProjection;
 using System.Linq;
 using System.Collections.Concurrent;
-using System;
-using System.Collections;
 
-namespace Cronus.Monitor.Controllers;
+namespace One.Inception.Monitor.Controllers;
 
 [Route("Monitor")]
 public class ServiceMonitorController : ControllerBase

@@ -5,7 +5,7 @@
       "Default": "Debug",
       "Override": {
         "Elders": "Information",
-        "Elders.Cronus": "Debug",
+        "One.Inception": "Debug",
         "Microsoft": "Debug",
         "Microsoft.AspNetCore": "Debug",
         "System": "Debug"

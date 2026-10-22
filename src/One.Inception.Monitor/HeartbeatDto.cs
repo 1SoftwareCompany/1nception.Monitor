@@ -1,8 +1,8 @@
-﻿using Elders.Cronus.Hosting.Heartbeat;
+﻿using One.Inception.Hosting.Heartbeat;
 using System;
 using System.Collections.Generic;
 
-namespace Cronus.Monitor;
+namespace One.Inception.Monitor;
 
 public class HeartbeatDto
 {

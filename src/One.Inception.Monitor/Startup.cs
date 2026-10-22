@@ -1,5 +1,5 @@
-﻿using Cronus.Monitor.Api;
-using Elders.Cronus;
+﻿using One.Inception.Monitor.Api;
+using One.Inception;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cronus.Monitor;
+namespace One.Inception.Monitor;
 
 public class Startup
 {
@@ -29,7 +29,7 @@ public class Startup
 
         services.AddControllers();
 
-        services.AddCronus(Configuration);
+        services.AddInception(Configuration);
         services.AddSingleton<MonitorContainer>();
 
         services.AddHostedService<Worker>();
