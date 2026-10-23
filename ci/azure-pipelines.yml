@@ -27,7 +27,7 @@ stages:
         - name: buildConfiguration
           value: 'Release'
         - name: PROJECT_DIR
-          value: 'Cronus.Monitor.Api'
+          value: 'One.Inception.Monitor.Api'
 
       steps:
         - checkout: self
@@ -48,7 +48,7 @@ stages:
           inputs:
             command: 'publish'
             publishWebProjects: false
-            projects: 'Cronus.Monitor/Cronus.Monitor/Cronus.Monitor.Api.csproj'
+            projects: 'src/One.Inception.Monitor/One.Inception.Monitor.Api.csproj'
             arguments: '/p:Configuration=Release --output $(Build.ArtifactStagingDirectory)/api'
             zipAfterPublish: false
             modifyOutputPath: false
@@ -89,8 +89,8 @@ stages:
 
       - task: PublishBuildArtifacts@1
         inputs:
-          PathtoPublish: '$(Build.SourcesDirectory)/Cronus.Monitor/src/Cronus.Monitor.configuration/public'
-          ArtifactName: 'cronus.monitor'
+          PathtoPublish: '$(Build.SourcesDirectory)/One.Inception.Monitor/src/One.Inception.Monitor.configuration/public'
+          ArtifactName: 'inception.monitor'
           publishLocation: 'Container'
  - stage: Deploy
    displayName: Deploy Stage
@@ -114,11 +114,11 @@ stages:
         inputs:
           buildType: 'current'
           buildVersionToDownload: 'latest'
-          artifactName: 'cronus.monitor'
+          artifactName: 'inception.monitor'
           downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor'
       - bash: |
           set -e
-          cd $(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor/cronus.monitor
+          cd $(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor/inception.monitor
           tar -cvf ../../conf-d.tar .
       - task: Kubernetes@1
         inputs:
@@ -135,7 +135,7 @@ stages:
           kubernetesServiceEndpoint: 'integration-cluster'
           namespace: unicom
           command: run
-          arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j cronus.monitor.api.json -m pandora-job -a Cronus.Monitor.Api -c int -o consul -h http://consul.unicom.internal:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
+          arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j inception.monitor.api.json -m pandora-job -a inception.monitor.Api -c int -o consul -h http://consul.unicom.internal:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
           versionSpec: 1.15.0     
       - task: Kubernetes@1
         displayName: 'kubectl wait'
@@ -197,11 +197,11 @@ stages:
               inputs:
                 buildType: 'current'
                 buildVersionToDownload: 'latest'
-                artifactName: 'cronus.monitor'
+                artifactName: 'inception.monitor'
                 downloadPath: '$(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor'
             - bash: |
                 set -e
-                cd $(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor/cronus.monitor
+                cd $(System.DefaultWorkingDirectory)/_OneBigSplash.Unicom.Monitor/inception.monitor
                 tar -cvf ../../conf-d.tar .
             - task: Kubernetes@1
               inputs:
@@ -218,7 +218,7 @@ stages:
                 kubernetesServiceEndpoint: 'pruvit-prd'
                 namespace: unicom
                 command: run
-                arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j cronus.monitor.api.json  -m pandora-job -a Cronus.Monitor.Api -c pruvit -o consul -h http://10.0.0.13:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
+                arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j inception.monitor.api.json  -m pandora-job -a inception.monitor.Api -c pruvit -o consul -h http://10.0.0.13:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
                 versionSpec: 1.15.0     
                  
             - task: Kubernetes@1
@@ -267,7 +267,7 @@ stages:
                 kubernetesServiceEndpoint: 'pruvit-prd'
                 namespace: unicom
                 command: run
-                arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j cronus.monitor.api.json  -m pandora-job -a Cronus.Monitor.Api -c prodrmq -o consul -h http://10.0.0.13:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
+                arguments: 'pandora --image elders/pandora.cli --restart Never --generator job/v1 --overrides {"\"apiVersion\": \"batch/v1\",\"spec\": {\"template\": {\"spec\": {\"containers\": [{\"name\": \"pandora\",\"image\": \"elders/pandora.cli\",\"command\": [\"/bin/sh\", \"-c\", \"mkdir /confs && tar -xf /configs/conf-d.tar -C /confs/ && dotnet Pandora.Cli.dll open -d /confs -j inception.monitor.api.json  -m pandora-job -a inception.monitor.Api -c prodrmq -o consul -h http://10.0.0.13:8500\"],\"volumeMounts\": [{\"mountPath\": \"/configs\",\"name\": \"configs\"}]}],\"volumes\": [{\"configMap\": {\"defaultMode\": 256,\"name\": \"unicom-monitor\",\"optional\": false},\"name\": \"configs\"}]}}}}'
                 versionSpec: 1.15.0     
                  
             - task: Kubernetes@1
