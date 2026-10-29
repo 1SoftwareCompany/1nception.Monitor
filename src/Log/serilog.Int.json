@@ -1,7 +1,7 @@
 {
     "Serilog": {
         "MinimumLevel": {
-            // Verbose | Debug | Information | Warning | Error | Fatal
+            //Verbose | Debug | Information | Warning | Error | Fatal
             "Default": "Debug",
             "Override": {
                 "Elders": "Debug",
