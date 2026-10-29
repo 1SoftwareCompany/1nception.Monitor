@@ -13,7 +13,7 @@ public static class Program
     public static void Main(string[] args)
     {
         Environment.SetEnvironmentVariable("APPLICATION", App.Name, EnvironmentVariableTarget.Process);
-        Environment.SetEnvironmentVariable("settix_application", App.Name, EnvironmentVariableTarget.Process);
+        Environment.SetEnvironmentVariable("settix_application", App.Settix, EnvironmentVariableTarget.Process);
         Environment.SetEnvironmentVariable("log_name", App.LogName, EnvironmentVariableTarget.Process);
 
         Start.WithStartupDiagnostics(App.Name, () => CreateHostBuilder(args).Build().Run());
