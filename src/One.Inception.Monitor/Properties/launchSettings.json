@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "Cronus.Monitor": {
+    "One.Inception.Monitor": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

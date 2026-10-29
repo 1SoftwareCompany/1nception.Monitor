@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<RootNamespace>One.Inception.Monitor.Api</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="1nception" Version="13.2.10" />
+		<PackageReference Include="1nception.AspNet" Version="13.0.1" />
+		<PackageReference Include="1nception.Domain" Version="13.3.1" />
+		<PackageReference Include="1nception.Serialization.NewtonsoftJson" Version="13.1.0" />
+		<PackageReference Include="1nception.Transport.RabbitMQ" Version="13.3.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="3.2.0" />
+		<PackageReference Include="OpenTelemetry.Api" Version="1.19.1" />
+		<PackageReference Include="Sett1x.Consul" Version="6.2.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Log\Log.csproj" />
+	</ItemGroup>
+</Project>

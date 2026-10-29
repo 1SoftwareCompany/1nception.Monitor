@@ -1,4 +1,4 @@
-using Elders.Pandora;
+using One.Settix;
 using Logging;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,14 +6,14 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
 
-namespace Cronus.Monitor;
+namespace One.Inception.Monitor;
 
 public static class Program
 {
     public static void Main(string[] args)
     {
         Environment.SetEnvironmentVariable("APPLICATION", App.Name, EnvironmentVariableTarget.Process);
-        Environment.SetEnvironmentVariable("pandora_application", App.Name, EnvironmentVariableTarget.Process);
+        Environment.SetEnvironmentVariable("settix_application", App.Settix, EnvironmentVariableTarget.Process);
         Environment.SetEnvironmentVariable("log_name", App.LogName, EnvironmentVariableTarget.Process);
 
         Start.WithStartupDiagnostics(App.Name, () => CreateHostBuilder(args).Build().Run());
@@ -24,7 +24,7 @@ public static class Program
                 .ConfigureAppConfiguration((context, configApp) =>
                 {
                     configApp.AddEnvironmentVariables();
-                    configApp.Add(new PandoraConsulConfigurationSource(Environment.GetEnvironmentVariable("CONSUL_ADDRESS", EnvironmentVariableTarget.Process)));
+                    configApp.Add(new SettixConsulConfigurationSource(Environment.GetEnvironmentVariable("CONSUL_ADDRESS", EnvironmentVariableTarget.Process)));
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace Cronus.Monitor;
+namespace One.Inception.Monitor;
 
 public sealed class LimitedConcurrentQueue<T> : ConcurrentQueue<T>
 {

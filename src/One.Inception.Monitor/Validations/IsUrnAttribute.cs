@@ -1,8 +1,7 @@
-﻿using Elders.Cronus;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Cronus.Monitor.Validations;
+namespace One.Inception.Monitor.Validations;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 public class IsUrnAttribute : ValidationAttribute

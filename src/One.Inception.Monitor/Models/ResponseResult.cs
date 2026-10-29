@@ -1,8 +1,7 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Cronus.Monitor.Models;
+namespace One.Inception.Monitor.Models;
 
 public class ResponseResult
 {
