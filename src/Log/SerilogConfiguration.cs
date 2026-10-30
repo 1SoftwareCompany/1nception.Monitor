@@ -13,22 +13,31 @@ public static class SerilogConfiguration
 
     public static void Configure(HostBuilderContext context, LoggerConfiguration config)
     {
+        config
+            .MinimumLevel.Debug()
+            .ReadFrom.Configuration(BuildConfiguration(context.HostingEnvironment.EnvironmentName))
+            .Enrich.WithProperty(ApplicationNamePropertyName, context.HostingEnvironment.ApplicationName)
+            .Enrich.WithMachineName()
+            .Enrich.FromLogContext();
+    }
+
+    internal static IConfiguration BuildConfiguration(string environment)
+    {
         var builder = new ConfigurationBuilder();
 
         if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
             builder.SetBasePath(Directory.GetCurrentDirectory());
 
-        builder
-            .AddEnvironmentVariables()
-            .AddJsonFile($"serilog.json", optional: false, reloadOnChange: true)
-            .AddJsonFile($"serilog.{context.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+        builder.AddJsonFile("serilog.json", optional: false, reloadOnChange: true);
 
-        config
-            .MinimumLevel.Debug()
-            .ReadFrom.Configuration(builder.Build())
-            .Enrich.WithProperty(ApplicationNamePropertyName, context.HostingEnvironment.ApplicationName)
-            .Enrich.WithMachineName()
-            .Enrich.FromLogContext();
+        // Sinks are defined per environment (serilog.Development.json, serilog.Production.json, ...)
+        if (!string.IsNullOrWhiteSpace(environment))
+            builder.AddJsonFile($"serilog.{environment}.json", optional: true, reloadOnChange: true);
+
+        // Environment variables override the JSON files (used by Kubernetes to set the log path)
+        builder.AddEnvironmentVariables();
+
+        return builder.Build();
     }
 }
 
@@ -38,15 +47,21 @@ public static class Start
 
     public static void WithStartupDiagnostics(string applicationName, Action programExecution)
     {
-        var builder = new ConfigurationBuilder();
-        BuildConfiguration(builder);
+        Serilog.Debugging.SelfLog.Enable(TextWriter.Synchronized(Console.Error));
+
+        // The bootstrap logger only writes to the console. It must not open the log file:
+        // the real logger (SerilogConfiguration.Configure) opens the same rolling file, and two
+        // writers on one file collide (the second one rolls to app-<date>_001.json).
+
+        var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
         Serilog.Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Build())
+            .ReadFrom.Configuration(SerilogConfiguration.BuildConfiguration(environment))
             .Enrich.WithProperty(ApplicationNamePropertyName, applicationName)
             .Enrich.WithMachineName()
             .Enrich.FromLogContext()
-            .CreateLogger();
+            .WriteTo.Console()
+            .CreateBootstrapLogger();
 
         try
         {
@@ -61,28 +76,12 @@ public static class Start
         catch (Exception ex)
         {
             Serilog.Log.Fatal(ex, $"{applicationName} host terminated unexpectedly!");
+            Environment.ExitCode = 1;
         }
         finally
         {
+            // Drains the async queue and flushes the file buffer before the process exits
             Serilog.Log.CloseAndFlush();
-        }
-    }
-
-    static void BuildConfiguration(ConfigurationBuilder builder)
-    {
-        if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
-        {
-            builder.SetBasePath(Directory.GetCurrentDirectory());
-        };
-
-        builder
-            .AddEnvironmentVariables()
-            .AddJsonFile("serilog.json", optional: false, reloadOnChange: true);
-
-        string environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT", EnvironmentVariableTarget.Process);
-        if (string.IsNullOrEmpty(environment) == false)
-        {
-            builder.AddJsonFile($"serilog.{environment}.json", optional: true);
         }
     }
 
