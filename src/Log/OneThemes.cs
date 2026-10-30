@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Log;
 
-static class EldersThemes
+static class OneThemes
 {
     public static SystemConsoleTheme Epic { get; } = new SystemConsoleTheme(
         new Dictionary<ConsoleThemeStyle, SystemConsoleThemeStyle>
